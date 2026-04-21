@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPS-TOPIK Quiz - BABA DEVELOPER</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h2 { color: #1a73e8; }
+        .question { font-size: 20px; margin-bottom: 20px; font-weight: bold; }
+        .options { display: grid; gap: 10px; }
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #1a73e8;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #1a73e8; color: white; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 18sp; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h2>EPS-TOPIK Practice</h2>
+    <div id="question" class="question">Loading Question...</div>
+    <div id="options" class="options"></div>
+    <div id="result"></div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            q: "Sa-gwa (사과) ka matlab kya hai?",
+            options: ["Aam", "Kaila", "Saib", "Angoor"],
+            correct: 2
+        },
+        {
+            q: "An-nyeong-ha-se-yo ka matlab?",
+            options: ["Shukriya", "Hello", "Khuda Hafiz", "Maafi"],
+            correct: 1
+        }
+    ];
+
+    let currentQ = 0;
+
+    function loadQuiz() {
+        const qElement = document.getElementById('question');
+        const optElement = document.getElementById('options');
+        const resElement = document.getElementById('result');
+        
+        resElement.innerText = "";
+        qElement.innerText = quizData[currentQ].q;
+        optElement.innerHTML = "";
+
+        quizData[currentQ].options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(index);
+            optElement.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected) {
+        const resElement = document.getElementById('result');
+        if(selected === quizData[currentQ].correct) {
+            resElement.innerHTML = "<span style='color:green;'>Sahi Jawab! ✅</span>";
+            setTimeout(() => {
+                currentQ++;
+                if(currentQ < quizData.length) loadQuiz();
+                else document.getElementById('quiz-container').innerHTML = "<h2>Quiz Khatam! Zabardast.</h2>";
+            }, 1500);
+        } else {
+            resElement.innerHTML = "<span style='color:red;'>Galat Jawab! ❌ Dubara koshish karein.</span>";
+        }
+    }
+
+    loadQuiz();
+</script>
+
+</body>
+</html>
