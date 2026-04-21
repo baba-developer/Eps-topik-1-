@@ -3,99 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EPS-TOPIK Quiz - BABA DEVELOPER</title>
+    <title>EPS-TOPIK - BABA DEVELOPER</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #1a2a2e; /* Dark theme background */
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            overflow: hidden;
         }
+
+        /* Language Selector Overlay */
+        #language-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            width: 80%;
+            max-width: 350px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .modal h2 { margin: 0 0 10px 0; font-size: 24px; }
+        .lang-list { margin: 20px 0; max-height: 250px; overflow-y: auto; }
+        
+        .lang-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .lang-item:hover, .lang-item.selected {
+            background: #f0f0f0;
+            border-color: #6c5ce7;
+        }
+
+        .lang-item img { width: 30px; margin-right: 15px; }
+
+        .ok-btn {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Main Quiz Container (Initially Hidden) */
         #quiz-container {
+            display: none;
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             text-align: center;
         }
-        h2 { color: #1a73e8; }
-        .question { font-size: 20px; margin-bottom: 20px; font-weight: bold; }
-        .options { display: grid; gap: 10px; }
-        button {
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #1a73e8;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover { background: #1a73e8; color: white; }
-        #result { margin-top: 20px; font-weight: bold; font-size: 18sp; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
+<div id="language-overlay">
+    <div class="modal">
+        <h2>Choose Language</h2>
+        <div class="lang-list">
+            <div class="lang-item" onclick="selectLang(this)">
+                <img src="https://flagcdn.com/w40/pk.png"> Pakistan (Urdu)
+            </div>
+            <div class="lang-item selected" onclick="selectLang(this)">
+                <img src="https://flagcdn.com/w40/us.png"> English
+            </div>
+            <div class="lang-item" onclick="selectLang(this)">
+                <img src="https://flagcdn.com/w40/np.png"> Nepali
+            </div>
+            </div>
+        <button class="ok-btn" onclick="startGame()">Ok</button>
+    </div>
+</div>
+
 <div id="quiz-container">
-    <h2>EPS-TOPIK Practice</h2>
-    <div id="question" class="question">Loading Question...</div>
-    <div id="options" class="options"></div>
-    <div id="result"></div>
+    <h3 id="question-text">Loading...</h3>
+    <div id="options-container" style="display: grid; gap: 10px;"></div>
 </div>
 
 <script>
+    function selectLang(element) {
+        // Purani selection khatam karna
+        document.querySelectorAll('.lang-item').forEach(item => item.classList.remove('selected'));
+        // Nayi selection add karna
+        element.classList.add('selected');
+    }
+
+    function startGame() {
+        document.getElementById('language-overlay').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        loadQuestion();
+    }
+
     const quizData = [
-        {
-            q: "Sa-gwa (사과) ka matlab kya hai?",
-            options: ["Aam", "Kaila", "Saib", "Angoor"],
-            correct: 2
-        },
-        {
-            q: "An-nyeong-ha-se-yo ka matlab?",
-            options: ["Shukriya", "Hello", "Khuda Hafiz", "Maafi"],
-            correct: 1
-        }
+        { q: "Sa-gwa (사과) ka matlab?", options: ["Apple", "Mango", "Banana"], correct: 0 }
     ];
 
-    let currentQ = 0;
-
-    function loadQuiz() {
-        const qElement = document.getElementById('question');
-        const optElement = document.getElementById('options');
-        const resElement = document.getElementById('result');
-        
-        resElement.innerText = "";
-        qElement.innerText = quizData[currentQ].q;
-        optElement.innerHTML = "";
-
-        quizData[currentQ].options.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(index);
-            optElement.appendChild(btn);
+    function loadQuestion() {
+        const qText = document.getElementById('question-text');
+        const optCont = document.getElementById('options-container');
+        qText.innerText = quizData[0].q;
+        optCont.innerHTML = "";
+        quizData[0].options.forEach((opt, i) => {
+            optCont.innerHTML += `<button style="padding:10px; cursor:pointer;">${opt}</button>`;
         });
     }
-
-    function checkAnswer(selected) {
-        const resElement = document.getElementById('result');
-        if(selected === quizData[currentQ].correct) {
-            resElement.innerHTML = "<span style='color:green;'>Sahi Jawab! ✅</span>";
-            setTimeout(() => {
-                currentQ++;
-                if(currentQ < quizData.length) loadQuiz();
-                else document.getElementById('quiz-container').innerHTML = "<h2>Quiz Khatam! Zabardast.</h2>";
-            }, 1500);
-        } else {
-            resElement.innerHTML = "<span style='color:red;'>Galat Jawab! ❌ Dubara koshish karein.</span>";
-        }
-    }
-
-    loadQuiz();
 </script>
 
 </body>
