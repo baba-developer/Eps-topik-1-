@@ -5,135 +5,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EPS-TOPIK - BABA DEVELOPER</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #1a2a2e; /* Dark theme background */
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-box: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; overflow-x: hidden; }
 
-        /* Language Selector Overlay */
+        /* --- 1. Language Selection Overlay --- */
         #language-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 3000;
         }
-
-        .modal {
-            background: white;
-            width: 80%;
-            max-width: 350px;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            animation: fadeIn 0.5s;
-        }
-
-        .modal h2 { margin: 0 0 10px 0; font-size: 24px; }
-        .lang-list { margin: 20px 0; max-height: 250px; overflow-y: auto; }
-        
-        .lang-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .lang-item:hover, .lang-item.selected {
-            background: #f0f0f0;
-            border-color: #6c5ce7;
-        }
-
+        .lang-modal { background: white; width: 85%; max-width: 350px; padding: 25px; border-radius: 20px; text-align: center; }
+        .lang-item { display: flex; align-items: center; padding: 12px; margin: 8px 0; border: 2px solid #eee; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .lang-item:hover, .lang-item.selected { border-color: #6c5ce7; background: #f8f7ff; }
         .lang-item img { width: 30px; margin-right: 15px; }
+        .ok-btn { background: #6c5ce7; color: white; border: none; padding: 12px 50px; border-radius: 25px; font-size: 18px; cursor: pointer; margin-top: 15px; width: 100%; }
 
-        .ok-btn {
-            background: #6c5ce7;
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 25px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        /* --- 2. Main Dashboard Layout --- */
+        #main-app { display: none; padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 40px 20px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        
+        .banner-card { background: #2d5a5e; margin: -25px 20px 20px 20px; padding: 20px; border-radius: 20px; color: white; display: flex; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15); cursor: pointer; }
+        .banner-card .icon-circle { background: white; border-radius: 50%; padding: 10px; margin-right: 15px; display: flex; }
 
-        /* Main Quiz Container (Initially Hidden) */
-        #quiz-container {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
+        .option-card { background: white; padding: 15px 5px; border-radius: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
+        .option-card:active { transform: scale(0.95); }
+        .option-card img { width: 40px; height: 40px; margin-bottom: 10px; }
+        .option-card p { font-size: 11px; font-weight: bold; color: #333; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* --- 3. Quiz Interface --- */
+        #quiz-section { display: none; padding: 20px; text-align: center; }
+        .quiz-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .q-image { width: 100%; max-width: 250px; margin-bottom: 15px; border-radius: 10px; }
+        .opt-btn { width: 100%; padding: 15px; margin: 8px 0; border: 2px solid #6c5ce7; background: white; border-radius: 12px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .opt-btn:hover { background: #6c5ce7; color: white; }
+
+        /* --- 4. Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item { text-align: center; font-size: 12px; color: #b2bec3; cursor: pointer; }
+        .nav-item.active { color: #6c5ce7; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
 <div id="language-overlay">
-    <div class="modal">
-        <h2>Choose Language</h2>
-        <div class="lang-list">
-            <div class="lang-item" onclick="selectLang(this)">
-                <img src="https://flagcdn.com/w40/pk.png"> Pakistan (Urdu)
+    <div class="lang-modal">
+        <h2 style="margin-bottom: 15px;">Choose Language</h2>
+        <div id="lang-list">
+            <div class="lang-item" onclick="selectMe(this)">
+                <img src="https://flagcdn.com/w40/pk.png"> Urdu (Pakistan)
             </div>
-            <div class="lang-item selected" onclick="selectLang(this)">
+            <div class="lang-item selected" onclick="selectMe(this)">
                 <img src="https://flagcdn.com/w40/us.png"> English
             </div>
-            <div class="lang-item" onclick="selectLang(this)">
+            <div class="lang-item" onclick="selectMe(this)">
                 <img src="https://flagcdn.com/w40/np.png"> Nepali
             </div>
-            </div>
-        <button class="ok-btn" onclick="startGame()">Ok</button>
+        </div>
+        <button class="ok-btn" onclick="goToDashboard()">Ok</button>
     </div>
 </div>
 
-<div id="quiz-container">
-    <h3 id="question-text">Loading...</h3>
-    <div id="options-container" style="display: grid; gap: 10px;"></div>
+<div id="main-app">
+    <div class="header">
+        <h1>안녕하세요 (Hello)</h1>
+        <div style="background:rgba(255,255,255,0.2); padding:8px; border-radius:50%;">
+            <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" width="40">
+        </div>
+    </div>
+
+    <div class="banner-card" onclick="startQuiz('Practice Test')">
+        <div class="icon-circle">
+            <img src="https://cdn-icons-png.flaticon.com/512/330/330591.png" width="30">
+        </div>
+        <div>
+            <div style="font-size:11px; opacity:0.9;">NEW KOREAN STANDARD</div>
+            <div style="font-size:18px; font-weight:bold;">EPS-TOPIK →</div>
+            <div style="font-size:10px; opacity:0.8;">Standard Textbook</div>
+        </div>
+    </div>
+
+    <div class="grid-container" id="menu-grid">
+        <div class="option-card" onclick="alert('Hangul Section Coming Soon!')">
+            <img src="https://cdn-icons-png.flaticon.com/512/167/167750.png">
+            <p>Hangul Alphabet</p>
+        </div>
+        <div class="option-card" onclick="alert('Eps Book Loading...')">
+            <img src="https://cdn-icons-png.flaticon.com/512/3330/3330314.png">
+            <p>Eps Book</p>
+        </div>
+        <div class="option-card" onclick="alert('Vocabulary List')">
+            <img src="https://cdn-icons-png.flaticon.com/512/3024/3024509.png">
+            <p>Vocabulary</p>
+        </div>
+        <div class="option-card" onclick="startQuiz('Book Questions')">
+            <img src="https://cdn-icons-png.flaticon.com/512/5692/5692030.png">
+            <p>Book Question</p>
+        </div>
+        <div class="option-card" onclick="startQuiz('Random')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png">
+            <p>Random Question</p>
+        </div>
+        <div class="option-card" onclick="startQuiz('Practice')">
+            <img src="https://cdn-icons-png.flaticon.com/512/2641/2641457.png">
+            <p>Practice Test</p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active"><span>🏠</span><br>Home</div>
+        <div class="nav-item"><span>🗂️</span><br>Flashcard</div>
+        <div class="nav-item"><span>🎮</span><br>Games</div>
+        <div class="nav-item"><span>👤</span><br>Profile</div>
+    </div>
+</div>
+
+<div id="quiz-section">
+    <button onclick="backToHome()" style="float:left; background:none; border:none; font-size:20px; cursor:pointer;">⬅️ Back</button>
+    <br><br>
+    <div class="quiz-box">
+        <h3 id="q-text" style="margin-bottom:15px;">Question</h3>
+        <img id="q-image" class="q-image" src="" style="display:none;">
+        <div id="options-box"></div>
+        <div id="quiz-msg" style="margin-top:15px; font-weight:bold;"></div>
+    </div>
 </div>
 
 <script>
-    function selectLang(element) {
-        // Purani selection khatam karna
-        document.querySelectorAll('.lang-item').forEach(item => item.classList.remove('selected'));
-        // Nayi selection add karna
-        element.classList.add('selected');
+    // 1. Language Selection Logic
+    function selectMe(el) {
+        document.querySelectorAll('.lang-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
     }
 
-    function startGame() {
+    function goToDashboard() {
         document.getElementById('language-overlay').style.display = 'none';
-        document.getElementById('quiz-container').style.display = 'block';
-        loadQuestion();
+        document.getElementById('main-app').style.display = 'block';
     }
 
-    const quizData = [
-        { q: "Sa-gwa (사과) ka matlab?", options: ["Apple", "Mango", "Banana"], correct: 0 }
+    // 2. Navigation
+    function backToHome() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+    }
+
+    // 3. Quiz Logic
+    const questions = [
+        { 
+            q: "Ye tasveer kis cheez ki hai?", 
+            img: "https://flagcdn.com/w160/kr.png", // Sample image
+            opts: ["Sa-gwa (사과)", "Ba-na-na (바나나)", "Su-bak (수박)", "Po-do (포도)"], 
+            ans: 0 
+        },
+        { 
+            q: "Korean mein 'Hello' ko kya kehte hain?", 
+            opts: ["Kamsahamnida", "Annyeonghaseyo", "Saranghae", "Mianhae"], 
+            ans: 1 
+        }
     ];
 
-    function loadQuestion() {
-        const qText = document.getElementById('question-text');
-        const optCont = document.getElementById('options-container');
-        qText.innerText = quizData[0].q;
-        optCont.innerHTML = "";
-        quizData[0].options.forEach((opt, i) => {
-            optCont.innerHTML += `<button style="padding:10px; cursor:pointer;">${opt}</button>`;
+    let currentQ = 0;
+
+    function startQuiz(type) {
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        currentQ = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        let q = questions[currentQ];
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('quiz-msg').innerText = "";
+        
+        let imgTag = document.getElementById('q-image');
+        if(q.img) { imgTag.src = q.img; imgTag.style.display = 'block'; }
+        else { imgTag.style.display = 'none'; }
+
+        let optBox = document.getElementById('options-box');
+        optBox.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            optBox.innerHTML += `<button class="opt-btn" onclick="checkAnswer(${i})">${o}</button>`;
         });
+    }
+
+    function checkAnswer(idx) {
+        let msg = document.getElementById('quiz-msg');
+        if(idx === questions[currentQ].ans) {
+            msg.innerHTML = "<span style='color:green;'>Sahi Jawab! ✅</span>";
+            setTimeout(() => {
+                currentQ++;
+                if(currentQ < questions.length) showQuestion();
+                else {
+                    document.getElementById('quiz-box').innerHTML = "<h2>Quiz Complete!</h2><button onclick='backToHome()' class='ok-btn'>Back to Home</button>";
+                }
+            }, 1500);
+        } else {
+            msg.innerHTML = "<span style='color:red;'>Galat! ❌ Dubara try karein.</span>";
+        }
     }
 </script>
 
