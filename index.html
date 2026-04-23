@@ -18,31 +18,38 @@
         .lang-item.selected { border-color: #6c5ce7; background: #f8f7ff; }
         .lang-item img { width: 30px; margin-right: 15px; }
 
-        /* --- 2. Dashboard --- */
+        /* --- 2. Dashboard Interface --- */
         #main-dashboard { display: none; }
         .header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 40px 20px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; color: white; display: flex; justify-content: space-between; align-items: center; }
         .banner { background: #2d5a5e; margin: -20px 20px 20px 20px; padding: 20px; border-radius: 20px; color: white; display: flex; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
         .option-card { background: white; padding: 20px 10px; border-radius: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
+        .option-card:active { transform: scale(0.95); }
         .option-card img { width: 50px; height: 50px; margin-bottom: 10px; }
         .option-card p { font-size: 14px; font-weight: bold; color: #333; }
         .full-width { grid-column: span 2; }
 
-        /* --- 3. PDF & Quiz Containers --- */
-        #pdf-container, #quiz-container { display: none; padding: 10px; text-align: center; height: 100vh; }
-        iframe { width: 100%; height: 90vh; border: none; border-radius: 15px; }
-        .back-btn { padding: 10px 20px; margin-bottom: 10px; background: #6c5ce7; color: white; border: none; border-radius: 10px; cursor: pointer; float: left; }
+        /* --- 3. Screen Containers --- */
+        #pdf-container, #quiz-container { display: none; padding: 10px; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; background: #f0f2f5; z-index: 500; }
+        .back-btn { padding: 10px 20px; margin: 10px; background: #6c5ce7; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        
+        iframe { width: 100%; height: calc(100vh - 70px); border: none; border-radius: 15px; background: white; }
+
+        /* Quiz Box Styling */
+        .quiz-box { background: white; padding: 30px; border-radius: 20px; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; }
+        .opt-btn { width: 100%; padding: 15px; margin: 8px 0; border: 2px solid #6c5ce7; border-radius: 12px; background: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .opt-btn:active { background: #6c5ce7; color: white; }
     </style>
 </head>
 <body>
 
 <div id="language-overlay">
     <div class="modal">
-        <h2>Choose Language</h2>
+        <h2 style="margin-bottom: 15px;">Choose Language</h2>
         <div class="lang-item" onclick="selectLang(this)"><img src="https://flagcdn.com/w40/pk.png"> Urdu</div>
         <div class="lang-item selected" onclick="selectLang(this)"><img src="https://flagcdn.com/w40/us.png"> English</div>
-        <button onclick="showDashboard()" style="width:100%; padding:12px; background:#6c5ce7; color:white; border:none; border-radius:25px; margin-top:10px;">Ok</button>
+        <button onclick="showDashboard()" style="width:100%; padding:12px; background:#6c5ce7; color:white; border:none; border-radius:25px; font-size:18px; margin-top:10px; cursor:pointer;">Ok</button>
     </div>
 </div>
 
@@ -51,13 +58,14 @@
         <h1>안녕하세요</h1>
         <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" width="50">
     </div>
+
     <div class="banner">
         <div style="background:white; border-radius:50%; padding:10px; margin-right:15px;"><img src="https://cdn-icons-png.flaticon.com/512/330/330591.png" width="30"></div>
         <div><div style="font-size:18px; font-weight:bold;">EPS-TOPIK →</div><small>Standard Textbook</small></div>
     </div>
 
     <div class="grid-container">
-        <div class="option-card" onclick="openPDF()">
+        <div class="option-card" onclick="openBook()">
             <img src="https://cdn-icons-png.flaticon.com/512/3330/3330314.png">
             <p>Eps Book</p>
         </div>
@@ -65,15 +73,15 @@
             <img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png">
             <p>Random Question</p>
         </div>
-        <div class="option-card" onclick="alert('Vocabulary...')">
+        <div class="option-card" onclick="alert('Vocabulary List Loading...')">
             <img src="https://cdn-icons-png.flaticon.com/512/3024/3024509.png">
             <p>Vocabulary</p>
         </div>
-        <div class="option-card" onclick="alert('Practice...')">
+        <div class="option-card" onclick="alert('Practice Questions...')">
             <img src="https://cdn-icons-png.flaticon.com/512/2641/2641457.png">
             <p>Practice Question</p>
         </div>
-        <div class="option-card full-width" onclick="alert('Book Question...')">
+        <div class="option-card full-width" onclick="alert('Book Questions...')">
             <img src="https://cdn-icons-png.flaticon.com/512/5692/5692030.png">
             <p>Book Question</p>
         </div>
@@ -82,12 +90,12 @@
 
 <div id="pdf-container">
     <button class="back-btn" onclick="backToHome()">⬅ Back</button>
-<iframe src="https://docs.google.com/viewer?srcid=1Z0opx8RjsCqJLFh0jhvC-48vDW-A8Gga&pid=explorer&efp=explorer_lowr&a=v&chrome=false&embedded=true"></iframe>
+    <iframe id="pdf-viewer" src="https://docs.google.com/viewer?url=https://drive.google.com/uc?id=1Z0opx8RjsCqJLFh0jhvC-48vDW-A8Gga&embedded=true"></iframe>
 </div>
 
 <div id="quiz-container">
     <button class="back-btn" onclick="backToHome()">⬅ Back</button>
-    <div style="background:white; padding:30px; border-radius:20px; margin-top:60px; clear:both;">
+    <div class="quiz-box">
         <h3 id="q-text">Sawal Loading...</h3>
         <div id="opt-box" style="margin-top:20px;"></div>
         <div id="feedback" style="margin-top:15px; font-weight:bold;"></div>
@@ -95,6 +103,7 @@
 </div>
 
 <script>
+    // --- Navigation Functions ---
     function selectLang(el) {
         document.querySelectorAll('.lang-item').forEach(i => i.classList.remove('selected'));
         el.classList.add('selected');
@@ -111,16 +120,17 @@
         document.getElementById('main-dashboard').style.display = 'block';
     }
 
-    function openPDF() {
+    function openBook() {
         document.getElementById('main-dashboard').style.display = 'none';
         document.getElementById('pdf-container').style.display = 'block';
     }
 
-    // Quiz Logic
+    // --- Quiz Logic ---
     const questions = [
         { q: "Sa-gwa (사과) ka matlab?", opts: ["Apple", "Mango", "Banana", "Grapes"], ans: 0 },
         { q: "Mul (물) ka matlab?", opts: ["Milk", "Water", "Tea", "Juice"], ans: 1 },
-        { q: "'100' ko Sino-Korean numbers mein kya kehte hain?", opts: ["십 (Sip)", "백 (Baek)", "천 (Cheon)", "만 (Man)"], ans: 1 }
+        { q: "'100' ko Sino-Korean numbers mein kya kehte hain?", opts: ["십 (Sip)", "백 (Baek)", "천 (Cheon)", "만 (Man)"], ans: 1 },
+        { q: "Doodh ko Korean mein kya kehte hain?", opts: ["U-yu", "Bang", "Mool", "Gogi"], ans: 0 }
     ];
 
     function startRandomQuiz() {
@@ -136,8 +146,9 @@
         document.getElementById('feedback').innerText = "";
         const box = document.getElementById('opt-box');
         box.innerHTML = "";
+        
         q.opts.forEach((o, i) => {
-            box.innerHTML += `<button onclick="check(${i}, ${q.ans})" style="width:100%; padding:15px; margin:5px 0; border:2px solid #6c5ce7; border-radius:10px; background:white; font-weight:bold; cursor:pointer;">${o}</button>`;
+            box.innerHTML += `<button class="opt-btn" onclick="check(${i}, ${q.ans})">${o}</button>`;
         });
     }
 
