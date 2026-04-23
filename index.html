@@ -24,10 +24,9 @@
         
         .banner { background: #2d5a5e; margin: -20px 20px 20px 20px; padding: 20px; border-radius: 20px; color: white; display: flex; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* Grid for 5 Buttons */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 columns for better look */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             padding: 20px;
         }
@@ -45,7 +44,6 @@
         .option-card img { width: 50px; height: 50px; margin-bottom: 10px; }
         .option-card p { font-size: 14px; font-weight: bold; color: #333; }
 
-        /* Special style for the 5th button to take full width if needed */
         .full-width { grid-column: span 2; }
 
         #quiz-container { display: none; padding: 20px; text-align: center; }
@@ -74,7 +72,7 @@
     </div>
 
     <div class="grid-container">
-        <div class="option-card" onclick="alert('Eps Book Opening...')">
+        <div class="option-card" onclick="window.open('https://drive.google.com/file/d/1Z0opx8RjsCqJLFh0jhvC-48vDW-A8Gga/view?usp=sharing', '_blank')">
             <img src="https://cdn-icons-png.flaticon.com/512/3330/3330314.png">
             <p>Eps Book</p>
         </div>
@@ -98,7 +96,7 @@
 </div>
 
 <div id="quiz-container">
-    <button onclick="backToHome()" style="float:left; border:none; background:none; font-size:20px;">⬅️ Back</button>
+    <button onclick="backToHome()" style="float:left; border:none; background:none; font-size:20px; cursor:pointer;">⬅️ Back</button>
     <div style="background:white; padding:30px; border-radius:20px; margin-top:50px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
         <h3 id="q-text">Sawal Loading...</h3>
         <div id="opt-box" style="margin-top:20px;"></div>
@@ -122,15 +120,14 @@
         document.getElementById('main-dashboard').style.display = 'block';
     }
 
-    // Random Question Logic with 1000+ Potential
     const questions = [
         { q: "Sa-gwa (사과) ka matlab?", opts: ["Apple", "Mango", "Banana", "Grapes"], ans: 0 },
         { q: "Mul (물) ka matlab?", opts: ["Milk", "Water", "Tea", "Juice"], ans: 1 },
-        { q: "'100' ko Sino-Korean numbers mein kya kehte hain?", opts: ["십 (Sip)", "백 (Baek)", "천 (Cheon)", "J만 (Man)"], ans: 1 },
-        { q: "Khali jagah bharein: "저는 한국어____ 공부합니다." (Main Korean language parhta hoon.)", opts: ["가 (ga)", "를 (reul)", "에 (e)", "에서 (eseo)"], ans: 1 }
-]; // Semicolon hamesha bracket ke bahar hota hai
+        { q: "'100' ko Sino-Korean numbers mein kya kehte hain?", opts: ["십 (Sip)", "백 (Baek)", "천 (Cheon)", "만 (Man)"], ans: 1 },
+        { q: "Khali jagah bharein: '저는 한국어____ 공부합니다.'", opts: ["가 (ga)", "를 (reul)", "에 (e)", "에서 (eseo)"], ans: 1 }
+    ];
+
     function startRandomQuiz() {
-        document.getElementById('main-app'); 
         document.getElementById('main-dashboard').style.display = 'none';
         document.getElementById('quiz-container').style.display = 'block';
         loadQuestion();
